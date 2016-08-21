@@ -48,6 +48,9 @@ typedef NS_ENUM(NSInteger, ZFQLoadRefreshState) {
 //加载下一篇
 @interface ZFQLoadFooterView : ZFQLoadFrontOrNextView
 
-- (void)footerPullWithOffset:(CGFloat)offset;
+@property (nonatomic,strong) NSLayoutConstraint *topC;
+
+- (void)begainPullAnimation;
+- (void)endPullAnimation;
 
 @end

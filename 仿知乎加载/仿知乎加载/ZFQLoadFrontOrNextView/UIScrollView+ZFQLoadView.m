@@ -59,15 +59,6 @@ static const char *zfqFooterViewKey = "zfqFooterView";
     }
 }
 
-- (void)testBegin
-{
-    [self.zfqHeaderView begainPullAnimation];
-}
-- (void)testEnd
-{
-    [self.zfqHeaderView endPullAnimation];
-}
-
 - (void)addLoadFooterWithRefreshingBlk:(void (^)())blk
 {
     if (self.zfqFooterView == nil) {
@@ -76,17 +67,17 @@ static const char *zfqFooterViewKey = "zfqFooterView";
         [self addSubview:footerView];
         
         //添加约束
-        /*
+        
         footerView.translatesAutoresizingMaskIntoConstraints = NO;
         NSDictionary *views = @{@"v":footerView};
         NSArray *hCons = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|-0-[v(>=0)]-0-|" options:0 metrics:nil views:views];
         NSLayoutConstraint *widthC = [NSLayoutConstraint constraintWithItem:footerView attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeWidth multiplier:1 constant:0];
         NSLayoutConstraint *heightC = [NSLayoutConstraint constraintWithItem:footerView attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeHeight multiplier:1 constant:zfqLoadViewHeight];
         NSLayoutConstraint *topC = [NSLayoutConstraint constraintWithItem:footerView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeBottom multiplier:1 constant:zfqLoadViewHeight];
-        
+        footerView.topC = topC;
         [self addConstraints:hCons];
         [self addConstraints:@[widthC,heightC,topC]];
-        */
+        
         
         footerView.beginRefreshBlk = blk;
         self.zfqFooterView = footerView;

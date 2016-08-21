@@ -18,7 +18,4 @@
 
 - (void)addLoadFooterWithRefreshingBlk:(void (^)())blk;
 
-- (void)testBegin;
-- (void)testEnd;
-
 @end

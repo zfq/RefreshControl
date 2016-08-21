@@ -18,7 +18,7 @@
     CGPathRef arrowTopPath;
     CGPathRef arrowBottomPath;
     BOOL _isOriginState;
-
+    
 }
 
 @end
@@ -36,6 +36,7 @@
         
         _retainOriginalShape = NO;
         _shapeLayer = [[CAShapeLayer alloc] init];
+        _shapeLayer.backgroundColor = [UIColor redColor].CGColor;
         _shapeLayer.strokeColor = [UIColor blueColor].CGColor;
         _shapeLayer.fillColor = [UIColor orangeColor].CGColor;
         _shapeLayer.lineWidth = 3;
@@ -60,7 +61,7 @@
     CGFloat orginX = fabs((frame.size.width - actualSize.width)/2);
     CGFloat originY = 20;
     _titleLabel.frame = CGRectMake(orginX, originY, actualSize.width, actualSize.height);
-
+    
     //更新shapLayer的位置
     CGFloat pX = frame.size.width/2;
     CGFloat pY = CGRectGetMaxY(_titleLabel.frame) + 8 + _shapeLayer.bounds.size.height/2;
@@ -76,11 +77,11 @@
         _loadScrollView = (UIScrollView *)newSuperview;
         [_loadScrollView addObserver:self forKeyPath:ZFQLoadViewContentOffset options:NSKeyValueObservingOptionNew context:NULL];
         
-//        _loadScrollView.alwaysBounceVertical = YES;
-//        _orginInsetsTop = _loadScrollView.contentInset.top;
-//        _orginInsetsBottom = _loadScrollView.contentInset.bottom;
-//        _originOffsetY = _loadScrollView.contentOffset.y;
-
+        //        _loadScrollView.alwaysBounceVertical = YES;
+        //        _orginInsetsTop = _loadScrollView.contentInset.top;
+        //        _orginInsetsBottom = _loadScrollView.contentInset.bottom;
+        //        _originOffsetY = _loadScrollView.contentOffset.y;
+        
     }
 }
 
@@ -187,6 +188,11 @@
     _originOffsetY = _loadScrollView.contentOffset.y;
 }
 
+- (void)willMoveToSuperview:(UIView *)newSuperview
+{
+    [super willMoveToSuperview:newSuperview];
+    NSLog(@">>>>");
+}
 - (void)beginRefresh
 {
     [_loadScrollView setContentOffsetY:-zfqLoadViewHeight animated:YES];
@@ -280,21 +286,23 @@
         }
         
         /*
-        [UIView animateWithDuration:2 delay:0.0 options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionAllowUserInteraction animations:^{
-            [_loadScrollView setContentInsetsTop:_orginInsetsTop + zfqLoadViewHeight];
-//            [_loadScrollView setContentOffset:CGPointMake(0, -(_orginInsetsTop + zfqLoadViewHeight)) animated:NO]; //抖动
-//            [_loadScrollView setContentOffset:CGPointMake(0, contentTop) animated:NO]; //卡死不动
-//            [_loadScrollView setContentOffset:CGPointMake(0, -(_orginInsetsTop + zfqLoadViewHeight))]; //抖动
-            [_loadScrollView setContentOffset:CGPointMake(0, contentTop)]; //正常 但动画时间不起作用了
-        } completion:^(BOOL finished) {
-            if (finished && self.beginRefreshBlk) {
-                self.beginRefreshBlk();
-            }
-        }];
-        */
-
-
+         [UIView animateWithDuration:2 delay:0.0 options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionAllowUserInteraction animations:^{
+         [_loadScrollView setContentInsetsTop:_orginInsetsTop + zfqLoadViewHeight];
+         //            [_loadScrollView setContentOffset:CGPointMake(0, -(_orginInsetsTop + zfqLoadViewHeight)) animated:NO]; //抖动
+         //            [_loadScrollView setContentOffset:CGPointMake(0, contentTop) animated:NO]; //卡死不动
+         //            [_loadScrollView setContentOffset:CGPointMake(0, -(_orginInsetsTop + zfqLoadViewHeight))]; //抖动
+         [_loadScrollView setContentOffset:CGPointMake(0, contentTop)]; //正常 但动画时间不起作用了
+         } completion:^(BOOL finished) {
+         if (finished && self.beginRefreshBlk) {
+         self.beginRefreshBlk();
+         }
+         }];
+         */
+        
+        
     } else if (_refeshState == ZFQLoadRefreshStateNormal) {
+        
+        //更新位置
         
         [UIView animateWithDuration:ZFQLoadViewBoundceAnimationDuration delay:0.0 options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionAllowUserInteraction animations:^{
             [_loadScrollView setContentInsetsTop:_orginInsetsTop];
@@ -320,11 +328,9 @@
 {
     [super layoutSubviews];
     
-    CGFloat y = _loadScrollView.contentSize.height;
-    CGFloat w = _loadScrollView.contentSize.width;
-    
-    self.frame = CGRectMake(0, y, _loadScrollView.contentSize.width, zfqLoadViewHeight);
-    self.shapeLayer.position = CGPointMake((w -self.shapeLayer.bounds.size.width)/2, self.shapeLayer.position.y);
+    self.shapeLayer.path = [self arrowBottomPath];
+    CGFloat height = _loadScrollView.contentSize.height;
+    [self.topC setConstant:height];
     
     _orginInsetsTop = _loadScrollView.contentInset.top;
     _orginInsetsBottom = _loadScrollView.contentInset.bottom;
@@ -378,9 +384,19 @@
     }
     
     CGFloat offsetY = _loadScrollView.contentOffset.y;
+    CGFloat contentH = _loadScrollView.contentSize.height;
+    CGFloat boundsH = _loadScrollView.bounds.size.height;
+    if (contentH >= boundsH && (contentH - offsetY >= boundsH)) {
+        return;
+    }
+    
+    CGFloat aa = contentH - boundsH;
+    if (aa <= 0) {
+        aa = 0;
+    }
     
     if (offsetY > 0) {
-        if (offsetY >= zfqLoadViewHeight) {    //表示下拉拉很大
+        if (offsetY >= zfqLoadViewHeight + aa) {    //表示下拉拉很大
             self.refeshState = ZFQLoadRefreshStateReay;
             if (_loadScrollView.isDragging == NO) {
                 //开始加载后设置为正在加载状态
@@ -423,11 +439,23 @@
         
     } else if (_refeshState == ZFQLoadRefreshStateNormal) {
         
+        //更新位置
+        [self setNeedsLayout];
+        
         [UIView animateWithDuration:ZFQLoadViewBoundceAnimationDuration delay:0.0 options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionAllowUserInteraction animations:^{
             [_loadScrollView setContentInsetsBottom:_orginInsetsBottom];
             
+            CGFloat offsetY = 0;
             CGFloat offsetX = _loadScrollView.contentOffset.x;
-            [_loadScrollView setContentOffset:CGPointMake(offsetX, _originOffsetY) animated:NO];
+            CGFloat contentH = _loadScrollView.contentSize.height;
+            CGFloat boundsH = _loadScrollView.bounds.size.height;
+            if ( contentH >= boundsH) {
+                offsetY = contentH - boundsH;
+                [_loadScrollView setContentOffset:CGPointMake(offsetX, offsetY) animated:NO];
+            } else {
+                [_loadScrollView setContentOffset:CGPointMake(offsetX, _originOffsetY) animated:NO];
+            }
+            
         } completion:^(BOOL finished) {
             
         }];
@@ -438,7 +466,4 @@
     }
 }
 
-
 @end
-
-

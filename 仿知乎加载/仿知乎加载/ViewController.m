@@ -10,7 +10,7 @@
 #import "UIScrollView+ZFQLoadView.h"
 
 @interface ViewController () <UITableViewDataSource>
-
+@property (nonatomic,assign) NSInteger count;
 @end
 
 @implementation ViewController
@@ -19,37 +19,32 @@
 {
     [super viewDidLoad];
     
-//    ZFQLoadFrontOrNextView *v = [[ZFQLoadFrontOrNextView alloc] initWithFrame:CGRectMake(30, 30, 200, 80)];
-//    ZFQLoadHeaderView *v = [[ZFQLoadHeaderView alloc] initWithFrame:CGRectMake(30, 30, 200, 80)];
-//    v.backgroundColor = [UIColor orangeColor];
-//    v.titleLabel.text = @"上拉加载上一页";
-//    [self.view addSubview:v];
-    
-//    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-//        [v headerPullWithOffset:0];
-//    });
+    __weak typeof(self) weakSelf = self;
+    self.count = 6;
     self.view.backgroundColor = [UIColor lightGrayColor];
-//    [self.myTableView addLoadHeaderWithRefreshingBlk:^{
-//        NSLog(@"开始加载");
-//    }];
-    
-    [self.myTableView addLoadFooterWithRefreshingBlk:^{
-        NSLog(@"开始加载Footer");
+    [self.myTableView addLoadHeaderWithRefreshingBlk:^{
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            weakSelf.count = weakSelf.count + 3;
+            [weakSelf.myTableView reloadData];
+            [weakSelf.myTableView.zfqHeaderView stopLoading];
+        });
+        NSLog(@"开始加载");
     }];
     
-//    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-//        [self.myTableView.zfqHearderView beginRefresh];
-//    });
-//
-//    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-//        [self.myTableView testEnd];
-//    });
-
+    
+    [self.myTableView addLoadFooterWithRefreshingBlk:^{
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            weakSelf.count = weakSelf.count + 3;
+            [weakSelf.myTableView reloadData];
+            [weakSelf.myTableView.zfqFooterView stopLoading];
+        });
+        NSLog(@"开始加载Footer");
+    }];
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return 10;
+    return self.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -75,8 +70,8 @@
 
 - (IBAction)myTest:(id)sender
 {
-//    [self.myTableView.zfqHeaderView stopLoading];
+    //    [self.myTableView.zfqHeaderView stopLoading];
     [self.myTableView.zfqFooterView stopLoading];
-
+    
 }
 @end
