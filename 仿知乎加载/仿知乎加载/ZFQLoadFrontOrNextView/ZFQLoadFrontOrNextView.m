@@ -363,15 +363,10 @@ static NSString * const ZFQLoadViewContentSize = @"contentSize";
     
     CGFloat offsetY = _loadScrollView.contentOffset.y;
     CGFloat contentH = _loadScrollView.contentSize.height;
-    CGFloat boundsH = _loadScrollView.bounds.size.height;
-
-    CGFloat aa = contentH - boundsH;
-    if (aa <= 0) {
-        aa = 0;
-    }
-
+    CGFloat frameH = _loadScrollView.frame.size.height;
+    
     if (offsetY > 0) {
-        if (offsetY >= zfqLoadViewHeight + aa) {
+        if ((offsetY + frameH) >= (zfqLoadViewHeight + contentH)) {
             self.refeshState = ZFQLoadRefreshStateReay;
             if (_loadScrollView.isDragging == NO) {
                 //开始加载后设置为正在加载状态
