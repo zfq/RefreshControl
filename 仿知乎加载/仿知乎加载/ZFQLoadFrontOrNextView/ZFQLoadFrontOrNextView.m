@@ -227,12 +227,11 @@ static NSString * const ZFQLoadViewContentSize = @"contentSize";
         return;
     }
     
-    CGFloat offsetY = _loadScrollView.contentOffset.y;
-    
+    CGFloat offsetY = _loadScrollView.contentOffset.y - _originOffsetY;
     if (offsetY < 0) {
         if (offsetY <= -zfqLoadViewHeight) {
             self.refeshState = ZFQLoadRefreshStateReay;
-            if (_loadScrollView.isDragging  == NO && _loadScrollView.isDecelerating == YES) {
+            if (_loadScrollView.isDragging == NO) {
                 //开始加载后设置为正在加载状态
                 self.refeshState = ZFQLoadRefreshStateLoading;
             }
@@ -370,7 +369,7 @@ static NSString * const ZFQLoadViewContentSize = @"contentSize";
     if (aa <= 0) {
         aa = 0;
     }
-    
+
     if (offsetY > 0) {
         if (offsetY >= zfqLoadViewHeight + aa) {
             self.refeshState = ZFQLoadRefreshStateReay;
@@ -430,9 +429,9 @@ static NSString * const ZFQLoadViewContentSize = @"contentSize";
             CGFloat boundsH = _loadScrollView.bounds.size.height;
             if ( contentH >= boundsH) {
                 offsetY = contentH - boundsH;
-                [_loadScrollView setContentOffset:CGPointMake(offsetX, offsetY) animated:NO];
+//                [_loadScrollView setContentOffset:CGPointMake(offsetX, offsetY) animated:NO];
             } else {
-                [_loadScrollView setContentOffset:CGPointMake(offsetX, _originOffsetY) animated:NO];
+//                [_loadScrollView setContentOffset:CGPointMake(offsetX, _originOffsetY) animated:NO];
             }
             
         } completion:^(BOOL finished) {
