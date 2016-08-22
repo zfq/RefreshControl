@@ -203,9 +203,6 @@ static NSString * const ZFQLoadViewContentSize = @"contentSize";
     _orginInsetsTop = _loadScrollView.contentInset.top;
     _orginInsetsBottom = _loadScrollView.contentInset.bottom;
     _originOffsetY = _loadScrollView.contentOffset.y;
-    
-    _originInserts = _loadScrollView.contentInset;
-    _originOffset = _loadScrollView.contentOffset;
 }
 
 - (void)beginRefresh
@@ -334,7 +331,6 @@ static NSString * const ZFQLoadViewContentSize = @"contentSize";
     _orginInsetsTop = _loadScrollView.contentInset.top;
     _orginInsetsBottom = _loadScrollView.contentInset.bottom;
     _originOffsetY = _loadScrollView.contentOffset.y;
-    NSLog(@"%@",NSStringFromUIEdgeInsets(_loadScrollView.contentInset));
 }
 
 - (void)willMoveToSuperview:(UIView *)newSuperview
@@ -344,9 +340,6 @@ static NSString * const ZFQLoadViewContentSize = @"contentSize";
     _orginInsetsTop = _loadScrollView.contentInset.top;
     _orginInsetsBottom = _loadScrollView.contentInset.bottom;
     _originOffsetY = _loadScrollView.contentOffset.y;
-    
-    _originInserts = _loadScrollView.contentInset;
-    _originOffset = _loadScrollView.contentOffset;
     
     if (_loadScrollView == newSuperview) {
         _loadScrollView = (UIScrollView *)newSuperview;
