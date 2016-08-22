@@ -20,7 +20,7 @@
     // Do any additional setup after loading the view.
     
     __weak typeof(self) weakSelf = self;
-    self.count = 14;
+    self.count = 4;
     self.view.backgroundColor = [UIColor lightGrayColor];
     
     [self.myTableView addLoadHeaderWithRefreshingBlk:^{
@@ -36,11 +36,10 @@
     
     [self.myTableView addLoadFooterWithRefreshingBlk:^{
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            weakSelf.count = weakSelf.count + 4;
+            weakSelf.count = weakSelf.count + 3;
             [weakSelf.myTableView reloadData];
             [weakSelf.myTableView.zfqFooterView stopLoading];
         });
-        NSLog(@"开始加载Footer");
     }];
     self.myTableView.zfqFooterView.titleLabel.text = @"加载下一篇";
     self.myTableView.zfqFooterView.backgroundColor = [UIColor redColor];
