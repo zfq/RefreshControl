@@ -3,8 +3,8 @@ Pod::Spec.new do |s|
 	s.name = "ZFQRefreshControl"
 	s.version  = "1.0"
 	s.description = <<-DESC
-				仿知乎的加载上一篇或下一篇的控件，实现原理参考了MJRefresh
-				
+							仿知乎的加载上一篇或下一篇的控件，实现原理参考了MJRefresh
+							DESC
 	s.summary = "上拉下拉刷新控件"
 	s.source = { :git => "https://github.com/zfq/RefreshControl" }
 	
