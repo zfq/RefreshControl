@@ -10,8 +10,9 @@
 
 #define ZFQLoadViewAnimationDuration 0.5
 #define ZFQLoadViewBoundceAnimationDuration 0.5
-#define ZFQLoadViewContentOffset @"contentOffset"
-#define ZFQLoadViewContentSize @"contentSize"
+
+static NSString * const ZFQLoadViewContentOffset = @"contentOffset";
+static NSString * const ZFQLoadViewContentSize = @"contentSize";
 
 @interface ZFQLoadFrontOrNextView()
 {
@@ -223,13 +224,13 @@
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSString *,id> *)change context:(void *)context
 {
-    if (_refeshState == ZFQLoadRefreshStateLoading || self.userInteractionEnabled == NO || self.alpha <= 0.01) {
+    if (_refeshState == ZFQLoadRefreshStateLoading
+        || self.userInteractionEnabled == NO
+        || self.alpha <= 0.01
+        || ([keyPath isEqualToString:ZFQLoadViewContentOffset] == NO)) {
         return;
     }
     
-    if ([keyPath isEqualToString:@"contentOffset"] == NO) {
-        return;
-    }
     CGFloat offsetY = _loadScrollView.contentOffset.y;
     
     if (offsetY < 0) {
@@ -359,8 +360,6 @@
     id toValue = (__bridge id)[self arrowBottomPath];
     [self pathAnimationFrom:fromValue to:toValue forKey:@"footer"];
 }
-
-
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSString *,id> *)change context:(void *)context
 {
