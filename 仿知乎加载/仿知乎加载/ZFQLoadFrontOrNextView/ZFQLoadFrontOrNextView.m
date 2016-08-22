@@ -11,6 +11,7 @@
 #define ZFQLoadViewAnimationDuration 0.5
 #define ZFQLoadViewBoundceAnimationDuration 0.5
 #define ZFQLoadViewContentOffset @"contentOffset"
+#define ZFQLoadViewContentSize @"contentSize"
 
 @interface ZFQLoadFrontOrNextView()
 {
@@ -18,7 +19,6 @@
     CGPathRef arrowTopPath;
     CGPathRef arrowBottomPath;
     BOOL _isOriginState;
-    
 }
 
 @end
@@ -76,12 +76,6 @@
         [_loadScrollView removeObserver:self forKeyPath:ZFQLoadViewContentOffset];
         _loadScrollView = (UIScrollView *)newSuperview;
         [_loadScrollView addObserver:self forKeyPath:ZFQLoadViewContentOffset options:NSKeyValueObservingOptionNew context:NULL];
-        
-        //        _loadScrollView.alwaysBounceVertical = YES;
-        //        _orginInsetsTop = _loadScrollView.contentInset.top;
-        //        _orginInsetsBottom = _loadScrollView.contentInset.bottom;
-        //        _originOffsetY = _loadScrollView.contentOffset.y;
-        
     }
 }
 
@@ -133,6 +127,21 @@
         arrowBottomPath = path;
     }
     return arrowBottomPath;
+}
+
+- (void)pathAnimationFrom:(id)fromValue to:(id)toValue forKey:(NSString *)key
+{
+    if (self.retainOriginalShape == NO) {
+        CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath:@"path"];
+        animation.duration = ZFQLoadViewAnimationDuration;
+        animation.fromValue = fromValue;
+        animation.toValue = toValue;
+        animation.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseOut];
+        animation.fillMode = kCAFillModeForwards;
+        animation.removedOnCompletion = NO;
+        self.retainOriginalShape = YES;
+        [self.shapeLayer addAnimation:animation forKey:key];
+    }
 }
 
 - (void)beginRefresh {}
@@ -188,11 +197,6 @@
     _originOffsetY = _loadScrollView.contentOffset.y;
 }
 
-- (void)willMoveToSuperview:(UIView *)newSuperview
-{
-    [super willMoveToSuperview:newSuperview];
-    NSLog(@">>>>");
-}
 - (void)beginRefresh
 {
     [_loadScrollView setContentOffsetY:-zfqLoadViewHeight animated:YES];
@@ -205,32 +209,16 @@
 
 - (void)begainPullAnimation
 {
-    if (self.retainOriginalShape == NO) {
-        CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath:@"path"];
-        animation.duration = ZFQLoadViewAnimationDuration;
-        animation.fromValue = (__bridge id)[self arrowTopPath];
-        animation.toValue = (__bridge id)[self originPath];
-        animation.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseOut];
-        animation.fillMode = kCAFillModeForwards;
-        animation.removedOnCompletion = NO;
-        self.retainOriginalShape = YES;
-        [self.shapeLayer addAnimation:animation forKey:@"top"];
-    }
+    id fromValue = (__bridge id)[self arrowTopPath];
+    id toValue = (__bridge id)[self originPath];
+    [self pathAnimationFrom:fromValue to:toValue forKey:@"header"];
 }
 
 - (void)endPullAnimation
 {
-    if (self.retainOriginalShape == NO) {
-        CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath:@"path"];
-        animation.duration = ZFQLoadViewAnimationDuration;
-        animation.fromValue = (__bridge id)[self originPath];
-        animation.toValue = (__bridge id)[self arrowTopPath];
-        animation.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseOut];
-        animation.fillMode = kCAFillModeForwards;
-        animation.removedOnCompletion = NO;
-        self.retainOriginalShape = YES;
-        [self.shapeLayer addAnimation:animation forKey:@"top"];
-    }
+    id fromValue = (__bridge id)[self originPath];
+    id toValue = (__bridge id)[self arrowTopPath];
+    [self pathAnimationFrom:fromValue to:toValue forKey:@"header"];
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSString *,id> *)change context:(void *)context
@@ -293,16 +281,14 @@
          //            [_loadScrollView setContentOffset:CGPointMake(0, -(_orginInsetsTop + zfqLoadViewHeight))]; //抖动
          [_loadScrollView setContentOffset:CGPointMake(0, contentTop)]; //正常 但动画时间不起作用了
          } completion:^(BOOL finished) {
-         if (finished && self.beginRefreshBlk) {
-         self.beginRefreshBlk();
-         }
+            if (finished && self.beginRefreshBlk) {
+                self.beginRefreshBlk();
+            }
          }];
          */
         
         
     } else if (_refeshState == ZFQLoadRefreshStateNormal) {
-        
-        //更新位置
         
         [UIView animateWithDuration:ZFQLoadViewBoundceAnimationDuration delay:0.0 options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionAllowUserInteraction animations:^{
             [_loadScrollView setContentInsetsTop:_orginInsetsTop];
@@ -319,6 +305,10 @@
     }
 }
 
+- (void)dealloc
+{
+    [_loadScrollView removeObserver:self forKeyPath:ZFQLoadViewContentSize];
+}
 @end
 
 #pragma mark - 加载下一篇
@@ -337,6 +327,15 @@
     _originOffsetY = _loadScrollView.contentOffset.y;
 }
 
+- (void)willMoveToSuperview:(UIView *)newSuperview
+{
+    [super willMoveToSuperview:newSuperview];
+    if (_loadScrollView == newSuperview) {
+        _loadScrollView = (UIScrollView *)newSuperview;
+        [_loadScrollView addObserver:self forKeyPath:ZFQLoadViewContentSize options:NSKeyValueObservingOptionNew context:NULL];
+    }
+}
+
 - (void)beginRefresh
 {
     [_loadScrollView setContentOffsetY:zfqLoadViewHeight animated:YES];
@@ -349,33 +348,19 @@
 
 - (void)begainPullAnimation
 {
-    if (self.retainOriginalShape == NO) {
-        CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath:@"path"];
-        animation.duration = ZFQLoadViewAnimationDuration;
-        animation.fromValue = (__bridge id)[self arrowBottomPath];
-        animation.toValue = (__bridge id)[self originPath];
-        animation.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseOut];
-        animation.fillMode = kCAFillModeForwards;
-        animation.removedOnCompletion = NO;
-        self.retainOriginalShape = YES;
-        [self.shapeLayer addAnimation:animation forKey:@"top"];
-    }
+    id fromValue = (__bridge id)[self arrowBottomPath];
+    id toValue = (__bridge id)[self originPath];
+    [self pathAnimationFrom:fromValue to:toValue forKey:@"footer"];
 }
 
 - (void)endPullAnimation
 {
-    if (self.retainOriginalShape == NO) {
-        CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath:@"path"];
-        animation.duration = ZFQLoadViewAnimationDuration;
-        animation.fromValue = (__bridge id)[self originPath];
-        animation.toValue = (__bridge id)[self arrowBottomPath];
-        animation.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseOut];
-        animation.fillMode = kCAFillModeForwards;
-        animation.removedOnCompletion = NO;
-        self.retainOriginalShape = YES;
-        [self.shapeLayer addAnimation:animation forKey:@"top"];
-    }
+    id fromValue = (__bridge id)[self originPath];
+    id toValue = (__bridge id)[self arrowBottomPath];
+    [self pathAnimationFrom:fromValue to:toValue forKey:@"footer"];
 }
+
+
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSString *,id> *)change context:(void *)context
 {
@@ -386,10 +371,7 @@
     CGFloat offsetY = _loadScrollView.contentOffset.y;
     CGFloat contentH = _loadScrollView.contentSize.height;
     CGFloat boundsH = _loadScrollView.bounds.size.height;
-    if (contentH >= boundsH && (contentH - offsetY >= boundsH)) {
-        return;
-    }
-    
+
     CGFloat aa = contentH - boundsH;
     if (aa <= 0) {
         aa = 0;
@@ -407,6 +389,12 @@
                 self.refeshState = ZFQLoadRefreshStatePulling;
             }
         }
+    }
+    
+    //只有scrollView的contentSize改变时，才调整位置
+    if ([keyPath isEqualToString:ZFQLoadViewContentSize]) {
+        CGFloat height = _loadScrollView.contentSize.height;
+        [self.topC setConstant:height];
     }
 }
 
@@ -439,9 +427,6 @@
         
     } else if (_refeshState == ZFQLoadRefreshStateNormal) {
         
-        //更新位置
-        [self setNeedsLayout];
-        
         [UIView animateWithDuration:ZFQLoadViewBoundceAnimationDuration delay:0.0 options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionAllowUserInteraction animations:^{
             [_loadScrollView setContentInsetsBottom:_orginInsetsBottom];
             
@@ -464,6 +449,7 @@
         self.retainOriginalShape = NO;
         [self endPullAnimation];
     }
+
 }
 
 @end
