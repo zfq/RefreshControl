@@ -20,7 +20,7 @@
     // Do any additional setup after loading the view.
     
     __weak typeof(self) weakSelf = self;
-    self.count = 0;
+    self.count = 14;
     self.view.backgroundColor = [UIColor lightGrayColor];
     
     [self.myTableView addLoadHeaderWithRefreshingBlk:^{
@@ -29,7 +29,6 @@
             [weakSelf.myTableView reloadData];
             [weakSelf.myTableView.zfqHeaderView stopLoading];
         });
-        NSLog(@"开始加载");
     }];
     self.myTableView.zfqHeaderView.titleLabel.text = @"加载上一篇";
     self.myTableView.zfqHeaderView.lineColor = [UIColor redColor];
@@ -37,7 +36,7 @@
     
     [self.myTableView addLoadFooterWithRefreshingBlk:^{
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            weakSelf.count = weakSelf.count + 3;
+            weakSelf.count = weakSelf.count + 4;
             [weakSelf.myTableView reloadData];
             [weakSelf.myTableView.zfqFooterView stopLoading];
         });

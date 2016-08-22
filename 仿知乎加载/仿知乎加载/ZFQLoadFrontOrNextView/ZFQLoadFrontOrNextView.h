@@ -11,25 +11,27 @@
 static NSInteger const zfqLoadViewHeight = 80;
 
 typedef NS_ENUM(NSInteger, ZFQLoadRefreshState) {
-    ZFQLoadRefreshStateNormal,   //not visible
+    ZFQLoadRefreshStateNormal,
     ZFQLoadRefreshStatePulling,
-    ZFQLoadRefreshStateReay,
     ZFQLoadRefreshStateLoading
 };
 
 @interface ZFQLoadFrontOrNextView : UIView
 {
     UIScrollView *_loadScrollView;
-    ZFQLoadRefreshState _refeshState;
+    ZFQLoadRefreshState _refreshState;
+    ZFQLoadRefreshState _oldRefreshState;
     CGFloat _orginInsetsTop;
     CGFloat _orginInsetsBottom;
     CGFloat _originOffsetY;
+    UIEdgeInsets _originInserts;
+    CGPoint _originOffset;
 }
 @property (nonatomic,strong) UILabel *titleLabel;
 @property (nonatomic,strong) CAShapeLayer *shapeLayer;
 @property (nonatomic,strong) UIColor *lineColor;
 @property (nonatomic,assign) BOOL retainOriginalShape;    //保持原有形状
-@property (nonatomic,assign) ZFQLoadRefreshState refeshState;
+@property (nonatomic,assign) ZFQLoadRefreshState refreshState;
 @property (nonatomic,copy) void (^beginRefreshBlk)();
 
 - (void)beginRefresh;
