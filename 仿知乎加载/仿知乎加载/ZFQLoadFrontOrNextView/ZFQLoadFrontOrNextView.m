@@ -35,7 +35,7 @@ static NSString * const ZFQLoadViewContentSize = @"contentSize";
         
         _retainOriginalShape = NO;
         _shapeLayer = [[CAShapeLayer alloc] init];
-        _shapeLayer.strokeColor = [UIColor blueColor].CGColor;
+        _shapeLayer.strokeColor = [UIColor blackColor].CGColor;
         _shapeLayer.lineWidth = 3;
         _shapeLayer.lineCap = kCALineCapRound;
         _shapeLayer.lineJoin = kCALineJoinRound;
@@ -230,7 +230,7 @@ static NSString * const ZFQLoadViewContentSize = @"contentSize";
     CGFloat offsetY = _loadScrollView.contentOffset.y;
     
     if (offsetY < 0) {
-        if (offsetY <= -zfqLoadViewHeight) {    //表示下拉拉很大
+        if (offsetY <= -zfqLoadViewHeight) {
             self.refeshState = ZFQLoadRefreshStateReay;
             if (_loadScrollView.isDragging  == NO && _loadScrollView.isDecelerating == YES) {
                 //开始加载后设置为正在加载状态
@@ -283,7 +283,6 @@ static NSString * const ZFQLoadViewContentSize = @"contentSize";
             }
          }];
          */
-        
         
     } else if (_refeshState == ZFQLoadRefreshStateNormal) {
         
@@ -373,7 +372,7 @@ static NSString * const ZFQLoadViewContentSize = @"contentSize";
     }
     
     if (offsetY > 0) {
-        if (offsetY >= zfqLoadViewHeight + aa) {    //表示下拉拉很大
+        if (offsetY >= zfqLoadViewHeight + aa) {
             self.refeshState = ZFQLoadRefreshStateReay;
             if (_loadScrollView.isDragging == NO) {
                 //开始加载后设置为正在加载状态
@@ -444,7 +443,6 @@ static NSString * const ZFQLoadViewContentSize = @"contentSize";
         self.retainOriginalShape = NO;
         [self endPullAnimation];
     }
-
 }
 
 @end
