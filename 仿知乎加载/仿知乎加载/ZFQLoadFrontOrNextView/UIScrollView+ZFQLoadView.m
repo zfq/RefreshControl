@@ -40,7 +40,7 @@ static const char *zfqFooterViewKey = "zfqFooterView";
 {
     if (self.zfqHeaderView == nil) {
         ZFQLoadHeaderView *hearderView = [[ZFQLoadHeaderView alloc] init];
-        hearderView.backgroundColor = [UIColor redColor];
+        hearderView.backgroundColor = [UIColor clearColor];
         [self addSubview:hearderView];
         
         //添加约束
@@ -63,11 +63,10 @@ static const char *zfqFooterViewKey = "zfqFooterView";
 {
     if (self.zfqFooterView == nil) {
         ZFQLoadFooterView *footerView = [[ZFQLoadFooterView alloc] init];
-        footerView.backgroundColor = [UIColor brownColor];
+        footerView.backgroundColor = [UIColor clearColor];
         [self addSubview:footerView];
         
         //添加约束
-        
         footerView.translatesAutoresizingMaskIntoConstraints = NO;
         NSDictionary *views = @{@"v":footerView};
         NSArray *hCons = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|-0-[v(>=0)]-0-|" options:0 metrics:nil views:views];
@@ -77,7 +76,6 @@ static const char *zfqFooterViewKey = "zfqFooterView";
         footerView.topC = topC;
         [self addConstraints:hCons];
         [self addConstraints:@[widthC,heightC,topC]];
-        
         
         footerView.beginRefreshBlk = blk;
         self.zfqFooterView = footerView;

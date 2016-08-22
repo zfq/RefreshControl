@@ -22,6 +22,8 @@
     __weak typeof(self) weakSelf = self;
     self.count = 6;
     self.view.backgroundColor = [UIColor lightGrayColor];
+    
+    
     [self.myTableView addLoadHeaderWithRefreshingBlk:^{
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             weakSelf.count = weakSelf.count + 3;
@@ -30,6 +32,7 @@
         });
         NSLog(@"开始加载");
     }];
+    self.myTableView.zfqHeaderView.titleLabel.text = @"加载上一篇";
     
     
     [self.myTableView addLoadFooterWithRefreshingBlk:^{
@@ -40,6 +43,7 @@
         });
         NSLog(@"开始加载Footer");
     }];
+    self.myTableView.zfqFooterView.titleLabel.text = @"加载下一篇";
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section

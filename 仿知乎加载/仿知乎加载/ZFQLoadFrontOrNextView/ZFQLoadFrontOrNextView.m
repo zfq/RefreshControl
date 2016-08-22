@@ -31,15 +31,11 @@ static NSString * const ZFQLoadViewContentSize = @"contentSize";
     self = [super initWithFrame:frame];
     if (self) {
         _titleLabel = [[UILabel alloc] init];
-        _titleLabel.backgroundColor = [UIColor grayColor];
-        _titleLabel.text = @"上下拉加载上下坡";
         [self addSubview:_titleLabel];
         
         _retainOriginalShape = NO;
         _shapeLayer = [[CAShapeLayer alloc] init];
-        _shapeLayer.backgroundColor = [UIColor redColor].CGColor;
         _shapeLayer.strokeColor = [UIColor blueColor].CGColor;
-        _shapeLayer.fillColor = [UIColor orangeColor].CGColor;
         _shapeLayer.lineWidth = 3;
         _shapeLayer.lineCap = kCALineCapRound;
         _shapeLayer.lineJoin = kCALineJoinRound;
