@@ -14,6 +14,8 @@
 		1F2DD9871D620F9500C08E86 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1F2DD9861D620F9500C08E86 /* Assets.xcassets */; };
 		1F2DD98A1D620F9500C08E86 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1F2DD9881D620F9500C08E86 /* LaunchScreen.storyboard */; };
 		1F2DD9931D62107B00C08E86 /* ZFQLoadFrontOrNextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F2DD9921D62107B00C08E86 /* ZFQLoadFrontOrNextView.m */; };
+		1F3E4B501D6AADB300884D04 /* TestViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F3E4B4F1D6AADB300884D04 /* TestViewController.m */; };
+		1F3E4B531D6AD13300884D04 /* ViewController2.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F3E4B521D6AD13300884D04 /* ViewController2.m */; };
 		1FDF34311D64BA0000D210E8 /* UIScrollView+ZFQLoadView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1FDF34301D64BA0000D210E8 /* UIScrollView+ZFQLoadView.m */; };
 /* End PBXBuildFile section */
 
@@ -30,6 +32,10 @@
 		1F2DD98B1D620F9500C08E86 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1F2DD9911D62107B00C08E86 /* ZFQLoadFrontOrNextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ZFQLoadFrontOrNextView.h; path = ZFQLoadFrontOrNextView/ZFQLoadFrontOrNextView.h; sourceTree = "<group>"; };
 		1F2DD9921D62107B00C08E86 /* ZFQLoadFrontOrNextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ZFQLoadFrontOrNextView.m; path = ZFQLoadFrontOrNextView/ZFQLoadFrontOrNextView.m; sourceTree = "<group>"; };
+		1F3E4B4E1D6AADB300884D04 /* TestViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestViewController.h; sourceTree = "<group>"; };
+		1F3E4B4F1D6AADB300884D04 /* TestViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestViewController.m; sourceTree = "<group>"; };
+		1F3E4B511D6AD13300884D04 /* ViewController2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ViewController2.h; sourceTree = "<group>"; };
+		1F3E4B521D6AD13300884D04 /* ViewController2.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ViewController2.m; sourceTree = "<group>"; };
 		1FDF342F1D64BA0000D210E8 /* UIScrollView+ZFQLoadView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UIScrollView+ZFQLoadView.h"; path = "ZFQLoadFrontOrNextView/UIScrollView+ZFQLoadView.h"; sourceTree = "<group>"; };
 		1FDF34301D64BA0000D210E8 /* UIScrollView+ZFQLoadView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIScrollView+ZFQLoadView.m"; path = "ZFQLoadFrontOrNextView/UIScrollView+ZFQLoadView.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -68,6 +74,10 @@
 				1F2DD97E1D620F9500C08E86 /* AppDelegate.m */,
 				1F2DD9801D620F9500C08E86 /* ViewController.h */,
 				1F2DD9811D620F9500C08E86 /* ViewController.m */,
+				1F3E4B511D6AD13300884D04 /* ViewController2.h */,
+				1F3E4B521D6AD13300884D04 /* ViewController2.m */,
+				1F3E4B4E1D6AADB300884D04 /* TestViewController.h */,
+				1F3E4B4F1D6AADB300884D04 /* TestViewController.m */,
 				1F2DD9911D62107B00C08E86 /* ZFQLoadFrontOrNextView.h */,
 				1F2DD9921D62107B00C08E86 /* ZFQLoadFrontOrNextView.m */,
 				1FDF342F1D64BA0000D210E8 /* UIScrollView+ZFQLoadView.h */,
@@ -160,6 +170,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1F3E4B531D6AD13300884D04 /* ViewController2.m in Sources */,
+				1F3E4B501D6AADB300884D04 /* TestViewController.m in Sources */,
 				1F2DD9931D62107B00C08E86 /* ZFQLoadFrontOrNextView.m in Sources */,
 				1F2DD9821D620F9500C08E86 /* ViewController.m in Sources */,
 				1F2DD97F1D620F9500C08E86 /* AppDelegate.m in Sources */,
