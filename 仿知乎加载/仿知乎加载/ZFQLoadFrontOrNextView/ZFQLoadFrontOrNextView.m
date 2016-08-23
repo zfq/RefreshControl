@@ -388,19 +388,17 @@ static NSString * const ZFQLoadViewContentSize = @"contentSize";
     CGFloat frameH = _loadScrollView.frame.size.height;
     
     if (offsetY+_orginInsetsTop > 0) {
+        
         if (_loadScrollView.isDragging) {
             
             if (contentH+_orginInsetsTop >= frameH) {
                 if (self.refreshState == ZFQLoadRefreshStateNormal && (offsetY + frameH) >= (zfqLoadViewHeight + contentH)) {
                     //临界条件即将开始加载
                     self.refreshState = ZFQLoadRefreshStatePulling;
-                } else if (self.refreshState == ZFQLoadRefreshStatePulling) {
-                    if ( (offsetY + frameH) < (zfqLoadViewHeight + contentH)) {
-                        self.refreshState = ZFQLoadRefreshStateNormal;
-                    }
+                } else if (self.refreshState == ZFQLoadRefreshStatePulling && (offsetY + frameH) < (zfqLoadViewHeight + contentH)) {
+                    self.refreshState = ZFQLoadRefreshStateNormal;
                 }
             } else {
-//                NSLog(@"%f,%f,%f",offsetY,contentH,frameH);
                 if (self.refreshState == ZFQLoadRefreshStateNormal && (offsetY+_orginInsetsTop >= zfqLoadViewHeight)) {
                     //临界条件即将开始加载
                     self.refreshState = ZFQLoadRefreshStatePulling;
@@ -408,11 +406,12 @@ static NSString * const ZFQLoadViewContentSize = @"contentSize";
                     self.refreshState = ZFQLoadRefreshStateNormal;
                 }
             }
+            
         } else if (self.refreshState == ZFQLoadRefreshStatePulling){
-            NSLog(@"开始加载");
             //开始加载后设置为正在加载状态
             self.refreshState = ZFQLoadRefreshStateLoading;
         }
+        
     }
     
 }
@@ -426,10 +425,11 @@ static NSString * const ZFQLoadViewContentSize = @"contentSize";
     _refreshState = refreshState;
     
     if (_refreshState == ZFQLoadRefreshStatePulling) {
+        
         //开始动画
-        NSLog(@"开始动画");
         self.retainOriginalShape = NO;
         [self begainPullAnimation];
+        
     } else if (_refreshState == ZFQLoadRefreshStateLoading) {
         
         CGFloat offsetY = _loadScrollView.contentOffset.y;
@@ -441,11 +441,11 @@ static NSString * const ZFQLoadViewContentSize = @"contentSize";
         }
         
     } else if (_refreshState == ZFQLoadRefreshStateNormal) {
-        NSLog(@"恢复动画");
+        
         self.retainOriginalShape = NO;
         [self endPullAnimation];
+        
         if (_oldRefreshState == ZFQLoadRefreshStateLoading) {
-            NSLog(@"恢复偏移量");
             [UIView animateWithDuration:ZFQLoadViewBoundceAnimationDuration delay:0.0 options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionAllowUserInteraction animations:^{
                 [_loadScrollView setContentInsetsBottom:_orginInsetsBottom];
             } completion:^(BOOL finished) {
