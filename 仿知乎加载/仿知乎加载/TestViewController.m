@@ -20,7 +20,7 @@
     // Do any additional setup after loading the view.
     
     __weak typeof(self) weakSelf = self;
-    self.count = 4;
+    self.count = 12;
     self.view.backgroundColor = [UIColor lightGrayColor];
     
     [self.myTableView addLoadHeaderWithRefreshingBlk:^{
