@@ -56,7 +56,7 @@ static NSString * const ZFQLoadViewContentSize = @"contentSize";
     //更新label位置
     CGSize actualSize = [_titleLabel sizeThatFits:frame.size];
     CGFloat orginX = fabs((frame.size.width - actualSize.width)/2);
-    CGFloat originY = 20;
+    CGFloat originY = zfqLoadViewHeight/4;
     _titleLabel.frame = CGRectMake(orginX, originY, actualSize.width, actualSize.height);
     
     //更新shapLayer的位置
@@ -188,21 +188,17 @@ static NSString * const ZFQLoadViewContentSize = @"contentSize";
 {
     [super layoutSubviews];
     self.shapeLayer.path = [self arrowTopPath];
-    
-    _orginInsetsTop = _loadScrollView.contentInset.top;
-    _orginInsetsBottom = _loadScrollView.contentInset.bottom;
-    _originOffsetY = _loadScrollView.contentOffset.y;
-    
-    _originInserts = _loadScrollView.contentInset;
-    _originOffset = _loadScrollView.contentOffset;
 }
 
 - (void)willMoveToSuperview:(UIView *)newSuperview
 {
     [super willMoveToSuperview:newSuperview];
+    
     _orginInsetsTop = _loadScrollView.contentInset.top;
     _orginInsetsBottom = _loadScrollView.contentInset.bottom;
     _originOffsetY = _loadScrollView.contentOffset.y;
+    
+    _originOffset = _loadScrollView.contentOffset;
 }
 
 - (void)beginRefresh
@@ -247,7 +243,7 @@ static NSString * const ZFQLoadViewContentSize = @"contentSize";
         happenOffsetY = _orginInsetsTop - zfqLoadViewHeight;
     }
     
-    if (offsetY < 0) {        
+    if (offsetY < 0) {
         if (_loadScrollView.isDragging) {
             if (self.refreshState == ZFQLoadRefreshStateNormal && offsetY <= happenOffsetY) {
                 //临界条件即将开始加载
@@ -260,7 +256,7 @@ static NSString * const ZFQLoadViewContentSize = @"contentSize";
             //开始加载后设置为正在加载状态
             self.refreshState = ZFQLoadRefreshStateLoading;
         }
-    
+        
     }
 }
 
@@ -270,7 +266,14 @@ static NSString * const ZFQLoadViewContentSize = @"contentSize";
         return;
     }
     
+    //针对push一个新VC时，新的带有导航栏的VC的UIScrollView的contentInset可能改变
+    if (_refreshState != ZFQLoadRefreshStateLoading) {
+        _orginInsetsTop = _loadScrollView.contentInset.top;
+    }
+    
     _refreshState = refreshState;
+    
+
     if (_refreshState == ZFQLoadRefreshStateNormal) {
         //关闭动画
         self.retainOriginalShape = NO;
@@ -278,7 +281,15 @@ static NSString * const ZFQLoadViewContentSize = @"contentSize";
         
         if (_oldRefreshState == ZFQLoadRefreshStatePulling) {
             [UIView animateWithDuration:ZFQLoadViewBoundceAnimationDuration delay:0.0 options:UIViewAnimationOptionBeginFromCurrentState animations:^{
-                [_loadScrollView setContentInsetsTop:_orginInsetsTop];
+                
+                //如下的代码是调试出来的
+                CGFloat currInsetT = _loadScrollView.contentInset.top;
+                if (_orginInsetsTop == zfqLoadViewHeight) {
+                    [_loadScrollView setContentInsetsTop:currInsetT - zfqLoadViewHeight];
+                } else {
+                    [_loadScrollView setContentInsetsTop:_orginInsetsTop];
+                }
+                
             } completion:^(BOOL finished) {
                 _oldRefreshState = ZFQLoadRefreshStateNormal;
             }];
@@ -290,15 +301,6 @@ static NSString * const ZFQLoadViewContentSize = @"contentSize";
         [self begainPullAnimation];
     } else if (_refreshState == ZFQLoadRefreshStateLoading) {
         CGFloat offsetY = _loadScrollView.contentOffset.y;
-        
-//        [UIView animateWithDuration:2 animations:^{
-//            [_loadScrollView setContentInsetsTop:_orginInsetsTop + zfqLoadViewHeight];
-//            [_loadScrollView setContentOffset:CGPointMake(0, offsetY)];
-//        } completion:^(BOOL finished) {
-//            if (self.beginRefreshBlk) {
-//                self.beginRefreshBlk();
-//            }
-//        }];
         
         [_loadScrollView setContentInsetsTop:_orginInsetsTop + zfqLoadViewHeight];
         [_loadScrollView setContentOffset:CGPointMake(0, offsetY)];
