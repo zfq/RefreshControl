@@ -239,15 +239,20 @@ static NSString * const ZFQLoadViewContentSize = @"contentSize";
         return;
     }
     
-    CGFloat offsetY = _loadScrollView.contentOffset.y - _originOffsetY;
-
-    if (offsetY < 0) {
-        
+    CGFloat offsetY = _loadScrollView.contentOffset.y;
+    CGFloat happenOffsetY = 0;
+    if (_orginInsetsTop > 0) {
+        happenOffsetY = -_orginInsetsTop - zfqLoadViewHeight;
+    } else {
+        happenOffsetY = _orginInsetsTop - zfqLoadViewHeight;
+    }
+    
+    if (offsetY < 0) {        
         if (_loadScrollView.isDragging) {
-            if (self.refreshState == ZFQLoadRefreshStateNormal && offsetY <= -zfqLoadViewHeight) {
+            if (self.refreshState == ZFQLoadRefreshStateNormal && offsetY <= happenOffsetY) {
                 //临界条件即将开始加载
                 self.refreshState = ZFQLoadRefreshStatePulling;
-            } else if (self.refreshState == ZFQLoadRefreshStatePulling && offsetY > -zfqLoadViewHeight) {
+            } else if (self.refreshState == ZFQLoadRefreshStatePulling && offsetY > happenOffsetY) {
                 //转为普通状态
                 self.refreshState = ZFQLoadRefreshStateNormal;
             }
@@ -274,9 +279,6 @@ static NSString * const ZFQLoadViewContentSize = @"contentSize";
         if (_oldRefreshState == ZFQLoadRefreshStatePulling) {
             [UIView animateWithDuration:ZFQLoadViewBoundceAnimationDuration delay:0.0 options:UIViewAnimationOptionBeginFromCurrentState animations:^{
                 [_loadScrollView setContentInsetsTop:_orginInsetsTop];
-                
-                CGFloat offsetX = _loadScrollView.contentOffset.x;
-                [_loadScrollView setContentOffset:CGPointMake(offsetX, _originOffsetY) animated:NO];
             } completion:^(BOOL finished) {
                 _oldRefreshState = ZFQLoadRefreshStateNormal;
             }];
@@ -288,26 +290,21 @@ static NSString * const ZFQLoadViewContentSize = @"contentSize";
         [self begainPullAnimation];
     } else if (_refreshState == ZFQLoadRefreshStateLoading) {
         CGFloat offsetY = _loadScrollView.contentOffset.y;
+        
+//        [UIView animateWithDuration:2 animations:^{
+//            [_loadScrollView setContentInsetsTop:_orginInsetsTop + zfqLoadViewHeight];
+//            [_loadScrollView setContentOffset:CGPointMake(0, offsetY)];
+//        } completion:^(BOOL finished) {
+//            if (self.beginRefreshBlk) {
+//                self.beginRefreshBlk();
+//            }
+//        }];
+        
         [_loadScrollView setContentInsetsTop:_orginInsetsTop + zfqLoadViewHeight];
         [_loadScrollView setContentOffset:CGPointMake(0, offsetY)];
         if (self.beginRefreshBlk) {
             self.beginRefreshBlk();
         }
-        
-        /*
-         [UIView animateWithDuration:4 delay:0.0 options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionAllowUserInteraction animations:^{
-             [_loadScrollView setContentInsetsTop:_orginInsetsTop + zfqLoadViewHeight];
-//             [_loadScrollView setContentOffset:CGPointMake(0, -(_orginInsetsTop + zfqLoadViewHeight)) animated:NO]; //抖动
-         //            [_loadScrollView setContentOffset:CGPointMake(0, contentTop) animated:NO]; //卡死不动
-//             [_loadScrollView setContentOffset:CGPointMake(0, -(_orginInsetsTop + zfqLoadViewHeight))]; //抖动
-         [_loadScrollView setContentOffset:CGPointMake(0, offsetY)]; //正常 但动画时间不起作用了
-         } completion:^(BOOL finished) {
-            if (finished && self.beginRefreshBlk) {
-                self.beginRefreshBlk();
-            }
-         }];
-        */
-        
     }
 }
 
