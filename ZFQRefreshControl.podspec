@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
 
 	s.name = "ZFQRefreshControl"
-	s.version  = "1.1"
+	s.version  = "1.2"
 	s.description = <<-DESC
 							仿知乎的加载上一篇或下一篇的控件，实现原理参考了MJRefresh
 							DESC
